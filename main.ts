@@ -1,5 +1,6 @@
 function updateHeartLeds () {
     strip.showColor(neopixel.rgb(currentBrightness, 0, 0))
+    wuKong.lightIntensity(currentBrightness)
     strip.show()
     if (currentBrightness > 0) {
         currentBrightness += 0 - dropRate
@@ -25,6 +26,7 @@ function moveDoor () {
         if (currentDoorPos > maxDoorPos) {
             currentDoorPos = maxDoorPos
         } else {
+            wuKong.setServoAngle(wuKong.ServoTypeList._180, wuKong.ServoList.S0, currentDoorPos)
             pins.servoWritePin(AnalogPin.P8, currentDoorPos)
         }
     } else {
@@ -32,6 +34,7 @@ function moveDoor () {
         if (currentDoorPos < 0) {
             currentDoorPos = 0
         } else {
+            wuKong.setServoAngle(wuKong.ServoTypeList._180, wuKong.ServoList.S0, currentDoorPos)
             pins.servoWritePin(AnalogPin.P8, currentDoorPos)
         }
     }
@@ -43,14 +46,14 @@ input.onButtonPressed(Button.B, function () {
 let currentButtonState = 0
 let doorState = false
 let maxDoorPos = 0
-let strip: neopixel.Strip = null
 let currentBrightness = 0
 let dropRate = 0
+let strip: neopixel.Strip = null
+strip = neopixel.create(DigitalPin.P1, 24, NeoPixelMode.RGB)
 let currentDoorPos = 0
 dropRate = 1
 let heartRate = 15
 currentBrightness = 100
-strip = neopixel.create(DigitalPin.P1, 38, NeoPixelMode.RGB)
 pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
 let oldButtonState = 1
 maxDoorPos = 100

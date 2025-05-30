@@ -5,7 +5,7 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "neopixel": "github:microsoft/pxt-neopixel#v0.7.6"
+        "wuKong": "github:elecfreaks/pxt-wukong#v1.5.8"
     },
     "files": [
         "main.blocks",
