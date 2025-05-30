@@ -1,6 +1,5 @@
 function updateHeartLeds () {
     strip.showColor(neopixel.rgb(currentBrightness, 0, 0))
-    wuKong.lightIntensity(currentBrightness)
     strip.show()
     if (currentBrightness > 0) {
         currentBrightness += 0 - dropRate
@@ -43,12 +42,21 @@ function moveDoor () {
 input.onButtonPressed(Button.B, function () {
     doorState = false
 })
+radio.onReceivedValue(function (name, value) {
+    if (name == "open") {
+        doorState = true
+    } else if (name == "close") {
+        doorState = false
+    }
+})
 let currentButtonState = 0
 let doorState = false
 let maxDoorPos = 0
 let currentBrightness = 0
 let dropRate = 0
 let strip: neopixel.Strip = null
+radio.setGroup(101)
+wuKong.setLightMode(wuKong.LightMode.OFF)
 strip = neopixel.create(DigitalPin.P1, 24, NeoPixelMode.RGB)
 let currentDoorPos = 0
 dropRate = 1
