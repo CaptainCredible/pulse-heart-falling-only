@@ -1,7 +1,5 @@
 function updateHeartLeds () {
-    strip.showColor(neopixel.rgb(currentBrightness, 0, 0))
-    strip.show()
-    if (currentBrightness > 0) {
+    if (currentBrightness > -50) {
         currentBrightness += 0 - dropRate
     } else {
         currentBrightness = 255
@@ -11,10 +9,19 @@ function updateHeartLeds () {
             dropRate = 5
         }
     }
+
+    if(currentBrightness<0){
+        actualLedBrightness = 0;
+    } else {
+        actualLedBrightness = currentBrightness;
+    }
+
     led.plotBarGraph(
-    currentBrightness,
+    actualLedBrightness,
     255
     )
+    strip.showColor(neopixel.rgb(actualLedBrightness, 0, 0))
+    strip.show()
 }
 input.onButtonPressed(Button.A, function () {
     doorState = true
@@ -55,20 +62,34 @@ let maxDoorPos = 0
 let currentBrightness = 0
 let dropRate = 0
 let strip: neopixel.Strip = null
+let actualLedBrightness = 0
+let currentDoorPos = 0
 radio.setGroup(101)
 wuKong.setLightMode(wuKong.LightMode.OFF)
-strip = neopixel.create(DigitalPin.P1, 24, NeoPixelMode.RGB)
-let currentDoorPos = 0
-dropRate = 1
-let heartRate = 15
+strip = neopixel.create(DigitalPin.P1, 52, NeoPixelMode.RGB)
+dropRate = 5
+let heartRate = 10
 currentBrightness = 100
 pins.setPull(DigitalPin.P2, PinPullMode.PullUp)
 let oldButtonState = 1
 maxDoorPos = 100
-loops.everyInterval(0, function () {
-    updateHeartLeds()
-    basic.pause(heartRate)
+
+
+control.inBackground(function () {
+    while (true) {
+        if (currentDoorPos > 0) {
+            updateHeartLeds()
+            lightsOn = true
+        } else if (lightsOn) {
+            strip.clear()
+            strip.show()
+            lightsOn = false
+        }
+        basic.pause(heartRate)
+    }
 })
+
+
 basic.forever(function () {
     currentButtonState = pins.digitalReadPin(DigitalPin.P2)
     if (currentButtonState == 0 && oldButtonState == 1) {
@@ -78,3 +99,4 @@ basic.forever(function () {
     oldButtonState = currentButtonState
     moveDoor()
 })
+let lightsOn = true
